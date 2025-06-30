@@ -77,9 +77,23 @@ docker-compose exec web python manage.py createsuperuser
 ## Git 
 
 ```bash
-git remote add origin https://github.com/username/reactify-django.git
+git remote add origin https://github.com/todor1/cfe-reactify-django.git
 git branch -M main
 git add .
 git commit -m "Initial commit"
 git push -u origin main
+```
+
+or if already have remote repository:
+```bash
+# Set up tracking for the main branch
+git branch --set-upstream-to=origin/main main
+
+# Pull the latest changes
+git pull
+
+# If you have local changes, you might need to commit them first:
+git add .
+git commit -m "Your commit message"
+git pull
 ```
