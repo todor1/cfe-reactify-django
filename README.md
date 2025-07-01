@@ -23,6 +23,7 @@ A full-stack web application that integrates Django REST Framework with React, p
 - Node.js 14.x or higher (for local development)
 - npm 6.x or higher
 - Python 3.7 or higher
+- psycopg2-binary==2.8.6: nb: psycopg2-binary version 2.9 causing utc errors when admin login tried
 
 ## 🚀 Getting Started
 
