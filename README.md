@@ -168,14 +168,14 @@ This project is licensed under the MIT License.
 - Django REST Framework
 - Create React App
 - Docker Community
-docker-compose exec web python manage.py migrate
-```
 
 ### 4. Create Superuser (Optional)
 
 To create an admin user, run:
 
 ```bash
+docker-compose exec web python manage.py migrate
+
 docker-compose exec web python manage.py createsuperuser
 ```
 
