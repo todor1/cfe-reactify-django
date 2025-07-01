@@ -68,7 +68,10 @@ docker-compose exec web python manage.py createsuperuser
 1. Set up Python virtual environment:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+source venv/bin/activate  
+# On Windows: .\venv\Scripts\activate
+source venv/Scripts/activate
+python.exe -m pip install --upgrade pip
 pip install -r src/requirements.txt
 ```
 
@@ -185,6 +188,7 @@ docker-compose exec web python manage.py createsuperuser
 - **Start containers**: `docker-compose up -d`
 - **Stop containers**: `docker-compose down`
 - **View logs**: `docker-compose logs -f`
+- **Create supersuser**: `docker-compose exec web python manage.py createsuperuser`
 - **Create new migrations**: `docker-compose exec web python manage.py makemigrations`
 - **Apply migrations**: `docker-compose exec web python manage.py migrate`
 - **Run tests**: `docker-compose exec web python manage.py test`

@@ -86,6 +86,8 @@ WSGI_APPLICATION = 'reactify.wsgi.application'
 #     }
 # }
 
+import psycopg2.extensions
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -94,6 +96,10 @@ DATABASES = {
         'PASSWORD': 'postgres',
         'HOST': 'db',
         'PORT': '5432',
+        'OPTIONS': {
+            'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_SERIALIZABLE,
+            'options': '-c timezone=UTC',
+        },
     }
 }
 
@@ -122,13 +128,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+# Timezone settings
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
-USE_TZ = True
+USE_TZ = True  # Important: This must be True for timezone support
 
 
 # Static files (CSS, JavaScript, Images)
