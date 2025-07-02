@@ -2,6 +2,11 @@
 
 A full-stack web application that integrates Django REST Framework with React, providing a modern, responsive user interface powered by a robust backend.
 
+## Problems
+- The old Django version not running properly with a local installation neither with uv, nor with venv
+- The dockerized version not able to get the react build changes into the django static files even when the scripts are run and files have been copied to the static-cdn-local folder. Port 8000 does not change from the initial hello world message
+- Other than that, the react app is working properly on port 3000
+
 ## 🚀 Features
 - Django 2.0.6 backend with REST API
 - React frontend with hot-reloading
@@ -174,9 +179,11 @@ This project is licensed under the MIT License.
 To create an admin user, run:
 
 ```bash
-docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py migrate  
 
 docker-compose exec web python manage.py createsuperuser
+
+docker-compose exec web python manage.py runserver
 ```
 
 ### 5. Access the Application
@@ -184,16 +191,94 @@ docker-compose exec web python manage.py createsuperuser
 - Django Admin: http://localhost:8000/admin/
 - API: http://localhost:8000/
 
+## 🔄 React Build Workflow
+
+When making changes to the React app, follow these steps to ensure they are properly reflected in the Django application:
+
+1. **Build the React app**:
+   ```bash
+   cd src/reactify-ui
+   npm run build
+   ```
+
+2. **Rename and copy build files**:
+   ```bash
+   npm run build-rename
+   npm run copy-buildfiles
+   ```
+
+3. **Collect static files** (from project root):
+   ```bash
+   docker-compose exec web python manage.py collectstatic --noinput
+   ```
+
+### One-command Build & Deploy
+
+You can also run this single command from the project root to perform all the above steps:
+
+```bash
+cd src/reactify-ui && npm run build && npm run build-rename && npm run copy-buildfiles && cd ../.. && docker-compose exec web python manage.py collectstatic --noinput
+```
+
 ### Common Commands
 
 - **Start containers**: `docker-compose up -d`
 - **Stop containers**: `docker-compose down`
 - **View logs**: `docker-compose logs -f`
+- **Run server**: `docker-compose exec web python manage.py runserver`
 - **Create supersuser**: `docker-compose exec web python manage.py createsuperuser`
 - **Create new migrations**: `docker-compose exec web python manage.py makemigrations`
 - **Apply migrations**: `docker-compose exec web python manage.py migrate`
 - **Run tests**: `docker-compose exec web python manage.py test`
 - **Access bash in container**: `docker-compose exec web bash`
+- **Collect static files**: `docker-compose exec web python manage.py collectstatic --noinput`
+
+## 📦 Managing Static Files
+
+### Collecting Static Files
+
+To collect all static files (including React build files) into the static directory:
+
+```bash
+# Navigate to the React UI directory
+cd src/reactify-ui
+
+# Build the React app
+npm run build
+
+# Collect static files into the Django static directory
+# This will copy the built React files to the appropriate static directory
+npm run collect
+
+# Or run the collectstatic command directly in the Docker container
+docker-compose exec web python manage.py collectstatic --noinput
+```
+
+### Development Workflow
+
+1. Make changes to your React components in `src/reactify-ui/src/`
+2. The development server will automatically reload with changes (if running with `npm start`)
+3. When ready to deploy:
+   - Build the React app: `npm run build`
+   - Collect static files: `npm run collect`
+   - The files will be available in Django's static files directory
+
+### Production Deployment
+
+In production, make sure to:
+1. Set `DEBUG = False` in `src/reactify/settings.py`
+2. Configure your web server (Nginx/Apache) to serve static files from the `static-cdn-local` directory
+3. Run `collectstatic` after each deployment
+
+### General workflow  
+1. make changes in react app
+2. run `npm run collect` in react app directory
+3. run `npm run build` in react app directory
+4. rename the build 
+5. copy the build to django static files
+6. collect static files so django can use them 
+7. run `docker-compose up -d` in django app directory   
+
 
 ## Git 
 

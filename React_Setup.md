@@ -8,22 +8,34 @@ Published on March 3, 2024
 Justin Mitchel
 
 ### tldr; 
-Vite builds your React.js app to your Django project. Using Django template context processors, to reference the built React.js files. Django's static files handling is still in use.
+Vite builds your React.js app to your Django project. Using Django template context processors, to reference the built React.js files. 
+Django's static files handling is still in use.
 This method works for nearly any JavaScript you want Django to run but I designed it specifically for React.js.
-First off, there's two ways to think about this:
- - React-first Hosting: React-first hosting deploys the Vite-managed index.html page to a static host. Still requires deploying Django to another host. Deploying this method is essentially deploying a static website.
 
- - Django-first Hosting: Django-first hosting deploys the Django project with Guincorn behind an HTTP Server like Nginx. Nginx can also serve the JavaScript. Aka, it can all be deployed on one server or with a CDN for the JavaScript and other static assets.
+First off, there's two ways to think about this:  
+
+ - React-first Hosting: React-first hosting deploys the Vite-managed index.html page to a static host. Still requires deploying Django to another host. Deploying this method is essentially deploying a static website.  
+
+
+ - Django-first Hosting: Django-first hosting deploys the Django project with Guincorn behind an HTTP Server like Nginx. Nginx can also serve the JavaScript. Aka, it can all be deployed on one server or with a CDN for the JavaScript and other static assets.  
+
+
  The other benefit of Django-first hosting is that we can leverage all things Django without adopting any other third party packages (like the Django Rest Famework) or being locked in to any given front end (e.g. React, Vue, Angular). The final added benefit is CORS just works since Django is running the show. Plus Django has built-in session support, caching, SEO, built-in API/JSON-resonses, database mapping, users, and other features that will just work since Django will serve the views that reference the JavaScript apps.
 
 ### Create the Projects
-Install Node.js 18 LTS and up
-Install Python 3.10 and up
-Create directory for your all your development projects:
+ - Install Node.js 18 LTS and up  
+ - Install Python 3.10 and up  
+ - Create directory for your all your development projects:  
+
 ```bash
 mkdir -p ~/dev-projects
 cd ~/dev-projects
 ```
+
+Sunsetting Create React App  
+
+February 14, 2025 by Matt Carroll and Ricky Hanlon
+Today, we’re deprecating Create React App for new apps, and encouraging existing apps to migrate to a framework, or to migrate to a build tool like Vite, Parcel, or RSBuild. -> <https://react.dev/blog/2025/02/14/sunsetting-create-react-app>
 
 Using Vite for React.js:
 ```bash

@@ -5,11 +5,13 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - static_volume:/app/static-cdn-local
     ports:
       - "8000:8000"
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - DEBUG=True  # Ensure debug is on for development
     depends_on:
       - db
 
@@ -27,3 +29,4 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
