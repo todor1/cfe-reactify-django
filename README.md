@@ -6,6 +6,7 @@ A full-stack web application that integrates Django REST Framework with React, p
 - The old Django version not running properly with a local installation neither with uv, nor with venv
 - The dockerized version not able to get the react build changes into the django static files even when the scripts are run and files have been copied to the static-cdn-local folder. Port 8000 does not change from the initial hello world message
 - Other than that, the react app is working properly on port 3000
+- Check if the project will run with newer versions of packages django and react
 
 ## 🚀 Features
 - Django 2.0.6 backend with REST API
