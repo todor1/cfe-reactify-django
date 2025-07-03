@@ -459,14 +459,17 @@ git checkout main
 git pull origin main
 
 # Merge your feature branch into main
-git merge <your-branch-name>
+# git merge <your-branch-name>
+git merge package_update
 
 # Push the merged changes to remote
 git push origin main
 
 # Clean up: delete the feature branch (optional)
-git branch -d <your-branch-name>
-git push origin --delete <your-branch-name>
+# git branch -d <your-branch-name>
+# git push origin --delete <your-branch-name>
+# git branch -d package_update
+git push origin --delete package_update
 ```
 
 #### Option B: Using GitHub Pull Request (Alternative)
