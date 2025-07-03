@@ -16,15 +16,16 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "collect": "docker-compose exec web python manage.py collectstatic --noinput",
     "build-rename": "npm run build-rename-js && npm run build-rename-css && npm run build-rename-logo",
-    "build-rename-logo": "renamer --regex --find '([^\\.])\\.[^\\.]+\\.(\\w+)' --replace '$1.$2' build/static/media/*",
-    "build-rename-js": "renamer --regex --find 'main\\.[^\\.]+\\.js' --replace 'reactify-django.ui.js' build/static/js/*.js",
-    "build-rename-css": "renamer --regex --find 'main\\.[^\\.]+\\.css' --replace 'reactify-django.ui.css' build/static/css/*.css",
-    "copy-buildfiles": "npm run copy-build-js && npm run copy-build-css && npm run copy-build-logo",
-    "copy-build-logo": "copyfiles -f 'build/static/media/*' '../staticfiles/img/'",
-    "copy-build-js": "copyfiles -f 'build/static/js/*.js' '../staticfiles/js/'",
-    "copy-build-css": "copyfiles -f 'build/static/css/*.css' '../staticfiles/css/'",
-    "collectstatic": "python ../manage.py collectstatic --no-input"
+    "build-rename-logo": "node -e \"const fs=require('fs'); const path=require('path'); const dir='build/static/media'; if(fs.existsSync(dir)) { fs.readdirSync(dir).forEach(file => { const match=file.match(/(.+)\\.[a-f0-9]+\\.(\\w+)$/); if(match) fs.renameSync(path.join(dir,file), path.join(dir,match[1]+'.'+match[2])); }); }\"",
+    "build-rename-js": "node -e \"const fs=require('fs'); const path=require('path'); const dir='build/static/js'; let count=0; if(fs.existsSync(dir)) { fs.readdirSync(dir).filter(f=>f.includes('main.')&&f.endsWith('.js')&&!f.endsWith('.map')).forEach(file => { fs.renameSync(path.join(dir,file), path.join(dir,'reactify-django.ui.js')); count++; }); } console.log(`✅ Renamed ${count} JS file(s)`);\"",
+    "build-rename-css": "node -e \"const fs=require('fs'); const path=require('path'); const dir='build/static/css'; let count=0; if(fs.existsSync(dir)) { fs.readdirSync(dir).filter(f=>f.includes('main.')&&f.endsWith('.css')&&!f.endsWith('.map')).forEach(file => { fs.renameSync(path.join(dir,file), path.join(dir,'reactify-django.ui.css')); count++; }); } console.log(`✅ Renamed ${count} CSS file(s)`);\"",
+    "copy-buildfiles": "npm run copy-build-js && npm run copy-build-css && npm run copy-build-logo && npm run copy-service-worker",
+    "copy-build-logo": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/static/media'; const dest='../staticfiles/img/'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive:true}); fs.readdirSync(src).forEach(file => { fs.copyFileSync(path.join(src,file), path.join(dest,file)); count++; }); } console.log(`✅ Copied ${count} logo/media file(s)`);\"",
+    "copy-build-js": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/static/js'; const dest='../staticfiles/js/'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive:true}); fs.readdirSync(src).filter(f=>f.endsWith('.js')&&!f.endsWith('.map')).forEach(file => { fs.copyFileSync(path.join(src,file), path.join(dest,file)); count++; }); } console.log(`✅ Copied ${count} JS file(s)`);\"",
+    "copy-build-css": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/static/css'; const dest='../staticfiles/css/'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive:true}); fs.readdirSync(src).filter(f=>f.endsWith('.css')&&!f.endsWith('.map')).forEach(file => { fs.copyFileSync(path.join(src,file), path.join(dest,file)); count++; }); } console.log(`✅ Copied ${count} CSS file(s)`);\"",
+    "copy-service-worker": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/service-worker.js'; const dest='../staticfiles/service-worker.js'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync('../staticfiles')) fs.mkdirSync('../staticfiles', {recursive:true}); fs.copyFileSync(src, dest); count++; } console.log(`✅ Copied ${count} service worker file(s)`);\"",
+    "collect": "echo '📁 Files copied to staticfiles. Now run from src directory: python manage.py collectstatic --noinput'",
+    "build-and-deploy": "echo '🚀 Starting React build and deploy...' && npm run build && npm run build-rename && npm run copy-buildfiles && npm run collect && echo '✅ Build and deploy completed! Remember to run collectstatic and hard refresh browser (Ctrl+F5)'"
   }
 }

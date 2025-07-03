@@ -16,10 +16,25 @@ Including another URLconf
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.urls import path, include
+from django.http import HttpResponse
+from django.conf import settings
+import os
+
+
+def service_worker(request):
+    """Serve the service worker file"""
+    file_path = os.path.join(settings.BASE_DIR, 'staticfiles', 'service-worker.js')
+    try:
+        with open(file_path, 'r') as f:
+            content = f.read()
+        return HttpResponse(content, content_type='application/javascript')
+    except FileNotFoundError:
+        return HttpResponse('Service worker not found', status=404)
 
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='react.html')),
+    path('service-worker.js', service_worker, name='service_worker'),
     path('admin/', admin.site.urls),
     path('api/posts/', include('posts.urls'))
 ]
