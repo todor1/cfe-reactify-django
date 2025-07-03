@@ -451,6 +451,7 @@ When you've completed work on a feature branch and want to merge it back to main
 # Save current work
 git add .
 git commit -m "Complete feature work - ready for merge"
+git push origin package_update
 
 # Switch to main branch
 git checkout main
@@ -469,7 +470,7 @@ git push origin main
 # git branch -d <your-branch-name>
 # git push origin --delete <your-branch-name>
 # git branch -d package_update
-git push origin --delete package_update
+# git push origin --delete package_update
 ```
 
 #### Option B: Using GitHub Pull Request (Alternative)
