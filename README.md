@@ -474,13 +474,15 @@ git push origin --delete <your-branch-name>
 # Save and push current branch
 git add .
 git commit -m "Complete feature work - ready for PR"
-git push origin <your-branch-name>
+# git push origin <your-branch-name>
+git push origin package_update
 
 # Then create a Pull Request on GitHub web interface
 # After PR is merged, update local main:
 git checkout main
 git pull origin main
-git branch -d <your-branch-name>
+# git branch -d <your-branch-name>
+git branch -d package_update
 ```
 
 #### Quick One-Command Merge (Current Branch → Main)
