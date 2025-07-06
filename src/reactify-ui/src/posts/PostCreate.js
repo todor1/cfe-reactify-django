@@ -1,5 +1,7 @@
 // @ts-nocheck
 import React, { Component } from 'react';
+import cookie from 'react-cookies'
+import 'whatwg-fetch'
 
 class PostCreate extends Component {
     constructor(props) {
@@ -10,22 +12,52 @@ class PostCreate extends Component {
 
         // Initialize state
         this.state = {
-            title: '',
-            content: '',
             draft: false,
-            publish: ''
+            title: null,
+            content: null,
+            publish: null,
+            errors: {}
         }
     }
+
+    createPost(data) {
+        const endpoint = "/api/posts/"
+        const csrfToken = cookie.load("csrftoken")
+        // let thisComp = this
+        if (csrfToken !== undefined) {
+            let lookupOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify(data),
+                credentials: "include"
+            }
+
+            fetch(endpoint, lookupOptions)
+                .then(function (response) {
+                    return response.json()
+                }).then(function (responseData) {
+                    console.log(responseData)
+                }).catch(function (error) {
+                    console.log("error", error)
+                    alert("An error occurred. Please try again later.")
+                })
+        }
+    }
+
     handleSubmit(event) {
         event.preventDefault()
-        console.log("this state", this.state)
+        // console.log("this state", this.state)
         let data = this.state
         // if (data['draft'] === "on") {
         //     data['draft'] = true
         // } else {
         //     data['draft'] = false
         // }
-        console.log("data after draft check", data)
+        // console.log("data from state", data)
+        this.createPost(data)
     }
     handleInputChange(event) {
         const target = event.target
@@ -34,14 +66,23 @@ class PostCreate extends Component {
         const name = target.name
 
         if (name === 'title') {
-            if (value.length > 15) {
-                alert("This title is too long. More than 15 chars.")
+            if (value.length > 100) {
+                alert("This title is too long. More than 100 chars.")
             }
         }
 
         console.log(name, value)
         this.setState({
             [name]: value
+        })
+    }
+    componentDidMount() {
+        this.setState({
+            draft: false,
+            title: null,
+            content: null,
+            publish: null,
+            errors: {}
         })
     }
     render() {
