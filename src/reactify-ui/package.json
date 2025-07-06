@@ -4,11 +4,13 @@
   "private": true,
   "dependencies": {
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-cookies": "^0.1.1",
+    "react-dom": "^16.4.0",
+    "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
-    "react-scripts": "1.1.4",
     "copyfiles": "^2.0.0",
+    "react-scripts": "1.1.4",
     "renamer": "^0.7.0"
   },
   "scripts": {
@@ -20,12 +22,14 @@
     "build-rename-logo": "node -e \"const fs=require('fs'); const path=require('path'); const dir='build/static/media'; if(fs.existsSync(dir)) { fs.readdirSync(dir).forEach(file => { const match=file.match(/(.+)\\.[a-f0-9]+\\.(\\w+)$/); if(match) fs.renameSync(path.join(dir,file), path.join(dir,match[1]+'.'+match[2])); }); }\"",
     "build-rename-js": "node -e \"const fs=require('fs'); const path=require('path'); const dir='build/static/js'; let count=0; if(fs.existsSync(dir)) { fs.readdirSync(dir).filter(f=>f.includes('main.')&&f.endsWith('.js')&&!f.endsWith('.map')).forEach(file => { fs.renameSync(path.join(dir,file), path.join(dir,'reactify-django.ui.js')); count++; }); } console.log(`✅ Renamed ${count} JS file(s)`);\"",
     "build-rename-css": "node -e \"const fs=require('fs'); const path=require('path'); const dir='build/static/css'; let count=0; if(fs.existsSync(dir)) { fs.readdirSync(dir).filter(f=>f.includes('main.')&&f.endsWith('.css')&&!f.endsWith('.map')).forEach(file => { fs.renameSync(path.join(dir,file), path.join(dir,'reactify-django.ui.css')); count++; }); } console.log(`✅ Renamed ${count} CSS file(s)`);\"",
-    "copy-buildfiles": "npm run copy-build-js && npm run copy-build-css && npm run copy-build-logo && npm run copy-service-worker",
+    "copy-buildfiles": "npm run copy-build-js && npm run copy-build-css && npm run copy-build-logo && npm run copy-service-worker && npm run copy-root-files",
     "copy-build-logo": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/static/media'; const dest='../staticfiles/img/'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive:true}); fs.readdirSync(src).forEach(file => { fs.copyFileSync(path.join(src,file), path.join(dest,file)); count++; }); } console.log(`✅ Copied ${count} logo/media file(s)`);\"",
     "copy-build-js": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/static/js'; const dest='../staticfiles/js/'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive:true}); fs.readdirSync(src).filter(f=>f.endsWith('.js')&&!f.endsWith('.map')).forEach(file => { fs.copyFileSync(path.join(src,file), path.join(dest,file)); count++; }); } console.log(`✅ Copied ${count} JS file(s)`);\"",
     "copy-build-css": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/static/css'; const dest='../staticfiles/css/'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive:true}); fs.readdirSync(src).filter(f=>f.endsWith('.css')&&!f.endsWith('.map')).forEach(file => { fs.copyFileSync(path.join(src,file), path.join(dest,file)); count++; }); } console.log(`✅ Copied ${count} CSS file(s)`);\"",
     "copy-service-worker": "node -e \"const fs=require('fs'); const path=require('path'); const src='build/service-worker.js'; const dest='../staticfiles/service-worker.js'; let count=0; if(fs.existsSync(src)) { if(!fs.existsSync('../staticfiles')) fs.mkdirSync('../staticfiles', {recursive:true}); fs.copyFileSync(src, dest); count++; } console.log(`✅ Copied ${count} service worker file(s)`);\"",
+    "copy-root-files": "node -e \"const fs=require('fs'); const path=require('path'); const files=['favicon.ico','manifest.json']; let count=0; if(!fs.existsSync('../staticfiles')) fs.mkdirSync('../staticfiles', {recursive:true}); files.forEach(file => { const src=path.join('build',file); const dest=path.join('../staticfiles',file); if(fs.existsSync(src)) { fs.copyFileSync(src, dest); count++; } }); console.log(`✅ Copied ${count} root file(s) (favicon, manifest)`);\"",
     "collect": "echo '📁 Files copied to staticfiles. Now run from src directory: python manage.py collectstatic --noinput'",
-    "build-and-deploy": "echo '🚀 Starting React build and deploy...' && npm run build && npm run build-rename && npm run copy-buildfiles && npm run collect && echo '✅ Build and deploy completed! Remember to run collectstatic and hard refresh browser (Ctrl+F5)'"
+    "build-and-deploy": "echo '🚀 Starting React build and deploy...' && npm run build && npm run build-rename && npm run copy-buildfiles && npm run collect && echo '✅ Build and deploy completed! Remember to run collectstatic and hard refresh browser (Ctrl+F5)'",
+    "build-deploy-collect": "echo '🚀 Starting complete React build and deploy with Django collectstatic...' && npm run build && npm run build-rename && npm run copy-buildfiles && cd ../src && python manage.py collectstatic --noinput && echo '✅ Complete build, deploy, and collect finished! Visit http://localhost:8000/ and hard refresh (Ctrl+F5)'"
   }
 }
